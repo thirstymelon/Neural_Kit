@@ -1,0 +1,36 @@
+# GPRbuild / Ada build artifacts
+obj/
+lib/
+
+# Alire generated files
+alire/
+config/
+
+# Generated executables
+bin/
+
+# Example project build artifacts
+example/obj/
+example/lib/
+example/bin/
+example/alire/
+example/config/
+
+# Generated GPRbuild files
+*.ali
+*.o
+*.a
+*.lexch
+*.bexch
+*.cswi
+
+# Generated binder files
+b__*.adb
+b__*.ads
+
+# Generated compiler output
+*.stdout
+*.stderr
+
+# macOS
+.DS_Store
