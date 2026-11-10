@@ -1,0 +1,143 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Getting started · Neural_Kit 0.2.0</title><link rel=stylesheet href="styles.css"><link rel="icon" type="image/png" href="assets/logo.png"></head><body data-r=""><header><div class=w><a class=brand href="index.html"><img src="assets/logo.png" alt="Neural_Kit"><span>Neural_Kit<i>.</i><sup>0.2.0</sup></span></a><nav><a href="getting-started.html" class=on>Start</a><a href="tutorials/index.html">Tutorials</a><a href="developer-overview.html">Developer</a><a href="reference.html">Reference</a></nav><button class=sb id=sk>Search <kbd>Ctrl K</kbd></button><button class=mb id=mb aria-label=Menu>≡</button></div></header><div class="w doc"><article>
+<p class=eb>Setup & Installation Guide</p><h1>Getting started with Neural_Kit</h1>
+<p class=lead>Learn how to set up the Ada 2022 toolchain with Alire, build Neural_Kit, run the automated test suite, and wire the library into your own projects.</p>
+
+<h2 id="prerequisites">Prerequisites: The Ada toolchain</h2>
+<p>Neural_Kit is written in modern <b>Ada 2022</b> and is packaged for the <b>Alire</b> package manager. To get started, you only need Alire installed on your system.</p>
+
+<h3>1. Installing Alire</h3>
+<p>Alire (Ada Literate REpository) automatically manages your GNAT compiler, GPRbuild, and project dependencies on Linux, macOS, and Windows.</p>
+<ul>
+<li><b>macOS (Homebrew):</b> <code>brew install alire</code></li>
+<li><b>Linux / Windows:</b> Download the official release binary from <a href="https://alire.ada.dev" target="_blank" rel="noopener">alire.ada.dev</a> or install via your distribution's package manager.</li>
+</ul>
+
+<p>Verify your Alire installation:</p>
+<pre class=sh><code>alr --version     # e.g., alr 2.0.2</code></pre>
+
+<h2 id="building">Building Neural_Kit</h2>
+<p>Clone the repository and build the library using Alire:</p>
+<pre class=sh><code># Clone the repository
+git clone https://github.com/thirstymelon/Neural_Kit.git
+cd Neural_Kit
+
+# Build the core library
+alr build</code></pre>
+
+<p>Alire will automatically download and configure the GNAT toolchain (if not already present), compile the Ada packages, and generate the static library <code>lib/libNeural_Kit.a</code>.</p>
+
+<h2 id="running-example">Running the included example</h2>
+<p>Neural_Kit includes a demonstration application in <code>example/</code> that trains a single neuron on the logical <b>AND</b> truth table, followed by a forward propagation pass through a multi-neuron layer:</p>
+<pre class=sh><code>cd example
+alr run</code></pre>
+
+<p>You will see output showing training loss decreasing over 10,000 epochs, followed by correct truth table predictions:</p>
+<pre class=sh><code>Neural_Kit v0.2.0
+Part 1: Single Neuron - AND Gate Training
+
+Epoch:  1000  Loss:  4.26605E-02
+Epoch:  5000  Loss:  8.64357E-03
+Epoch:  10000 Loss:  4.30104E-03
+
+AND results:
+Input: (0.0, 0.0)  Target: 0.0  Prediction: 1.82568E-07  Class: FALSE
+Input: (0.0, 1.0)  Target: 0.0  Prediction: 5.04433E-03  Class: FALSE
+Input: (1.0, 0.0)  Target: 0.0  Prediction: 5.04748E-03  Class: FALSE
+Input: (1.0, 1.0)  Target: 1.0  Prediction: 9.92952E-01  Class: TRUE
+
+----------------------------------------
+Part 2: Multi-Neuron Layer Forward Propagation
+Architecture: Input(2) -> Dense(3, ReLU) -> Dense(2, Softmax)
+
+Sample Input: (1.0, 0.5)
+Hidden Layer Output (ReLU, 3 neurons): (0.0, 1.16223, 0.0)
+Final Layer Output (Softmax probabilities, 2 classes): (0.14246, 0.85754)
+Probability Sum: 1.00000</code></pre>
+
+<h2 id="running-tests">Running the automated test suite</h2>
+<p>Neural_Kit includes a comprehensive automated test runner verifying linear algebra, numerical stability, activations, loss calculations, Box-Muller PRNG distributions, and gradient checking:</p>
+<pre class=sh><code># Build and execute the test runner
+gprbuild -P tests/tests.gpr
+./tests/bin/test_runner</code></pre>
+<p>The test runner will execute all 113 assertions and print a green status report:</p>
+<pre class=sh><code>=== Running Suite: Vector Operations ===
+  Suite complete: 12 / 12 passed.
+=== Running Suite: Matrix Operations ===
+  Suite complete: 12 / 12 passed.
+=== Running Suite: Activation Functions ===
+  Suite complete: 18 / 18 passed.
+=== Running Suite: Loss Functions ===
+  Suite complete: 9 / 9 passed.
+=== Running Suite: Random and Initialization ===
+  Suite complete: 9 / 9 passed.
+=== Running Suite: Neuron Regression and Training ===
+  Suite complete: 8 / 8 passed.
+=== Running Suite: Layer and Multi-Neuron Architecture ===
+  Suite complete: 34 / 34 passed.
+=== Running Suite: Numerical Gradient Checking ===
+  Suite complete: 11 / 11 passed.
+
+========================================
+Test Summary: 113 passed, 0 failed out of 113 total assertions.
+ALL TESTS PASSED.
+========================================</code></pre>
+
+<h2 id="project-anatomy">Repository structure</h2>
+<p>The library is structured into modular units:</p>
+<table>
+<tr><th>Path<th>Package<th>Description</tr>
+<tr><td><code>src/neural_kit-types.ads</code><td><code>Neural_Kit.Types</code><td>Defines <code>Scalar</code> (Float32), unconstrained <code>Vector</code> and <code>Matrix</code>, and framework exceptions.</tr>
+<tr><td><code>src/math/</code><td><code>Neural_Kit.Math</code><td>Pure linear algebra (<code>Dot</code>, <code>Multiply</code>, <code>Hadamard</code>), activations (<code>Sigmoid</code>, <code>ReLU</code>, <code>Tanh</code>, <code>Softmax</code>), and losses (<code>BCE</code>, <code>MSE</code>).</tr>
+<tr><td><code>src/random/</code><td><code>Neural_Kit.Random</code><td>Independent PCG32 generator, Box-Muller normal transforms, and Xavier / He initializers.</tr>
+<tr><td><code>src/neuron/</code><td><code>Neural_Kit.Neuron</code><td>Trainable single neuron with arbitrary dimension inputs and gradient descent updates.</tr>
+<tr><td><code>src/layer/</code><td><code>Neural_Kit.Layer</code><td>Dense multi-neuron layer with weight matrix, bias vector, activations, and backpropagation gradient flow.</tr>
+</table>
+
+<h2 id="create-project">Using Neural_Kit in your own project</h2>
+<p>To use Neural_Kit in your own Ada application:</p>
+<ol>
+<li>Create a new Alire project:
+<pre class=sh><code>alr init --bin my_neural_app
+cd my_neural_app</code></pre>
+</li>
+<li>In your project's GPR file (<code>my_neural_app.gpr</code>), add the reference to Neural_Kit:
+<pre><code>with "../Neural_Kit/neural_kit.gpr";
+
+project My_Neural_App is
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+   for Main use ("main.adb");
+end My_Neural_App;</code></pre>
+</li>
+<li>Write your code in <code>src/main.adb</code> and run <code>alr run</code>.</li>
+</ol>
+
+<div class="pn"><a href="index.html"><small>PREVIOUS</small>Overview</a><a href="tutorials/index.html"><small>NEXT</small>Beginner tutorials</a></div>
+
+</article><aside id=toc></aside></div><footer><div class=w><span>Neural_Kit 0.2.0 · Getting Started Guide</span><span>Alire / Ada 2022</span></div></footer><div id=pal><div><input id=pi placeholder="Search the docs…"><div id=pl></div></div></div>
+<script>
+const IDX=[["Overview", "index.html", "Home"], ["Getting started", "getting-started.html", "Guide"], ["Tutorials index", "tutorials/index.html", "Course"], ["Beginner tutorial guide", "tutorials/beginner-guide.html", "Tutorial"], ["Developer overview", "developer-overview.html", "Architecture"], ["API reference", "reference.html", "API"]];
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],R=document.body.dataset.r;
+const RE=/(--[^\n]*)|("(?:[^"\\]|\\.)*")|\b(0x[0-9a-fA-F_]+|\d[\d_]*(?:\.\d+)?)\b|\b(with|use|package|body|is|begin|end|function|procedure|return|type|subtype|tagged|record|limited|private|constant|array|of|range|digits|in|out|loop|for|while|if|then|elsif|else|case|when|raise|exception|pragma|null|others)\b|\b(Scalar|Vector|Matrix|Neuron|Layer|Positive|Natural|Integer|Float|Long_Float|Boolean|True|False)\b|('Range|'Length|'First|'Last|'Result|'Valid|'Image|'Access)|(\+|-|\*|\/|:=|=>|\.\.|<=|>=|\/=|=|<|>)/g;
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+$$('pre').forEach(p=>{
+  const c=p.querySelector('code');if(!c)return;const raw=c.textContent,isSh=p.classList.contains('sh');
+  let title=isSh?'Terminal — zsh':'my_neural_app.gpr';
+  if(!isSh){
+    const hl=esc(raw).replace(RE,(m,cm,st,nu,kw,ty,at,op)=>cm?`<span class="c">${cm}</span>`:st?`<span class="s">${st}</span>`:nu?`<span class="n">${nu}</span>`:kw?`<span class="k">${kw}</span>`:ty?`<span class="t">${ty}</span>`:at?`<span class="b">${at}</span>`:op?`<span class="o">${op}</span>`:m);
+    c.innerHTML=hl.split('\n').map(l=>`<span class="line">${l||' '}</span>`).join('');
+  } else {
+    c.innerHTML=esc(raw).replace(/(#[^\n]*)|("(?:[^"\\]|\\.)*")|(--?[a-zA-Z0-9_-]+)|\b(alr|gprbuild|cd|mkdir|git)\b|\b(build|run|test|get|init|status)\b/g,(m,cm,st,fl,cmd,sc)=>cm?`<span class="c">${cm}</span>`:st?`<span class="s">${st}</span>`:fl?`<span class="flg">${fl}</span>`:cmd?`<span class="cmd">${cmd}</span>`:sc?`<span class="sc">${sc}</span>`:m);
+  }
+  const bar=document.createElement('div');bar.className='mac-bar';bar.innerHTML=`<div class="mac-dots"><span class="mac-dot r"></span><span class="mac-dot y"></span><span class="mac-dot g"></span></div><div class="mac-title">${title}</div><button class="cb" type="button">Copy</button>`;
+  bar.querySelector('.cb').onclick=()=>navigator.clipboard.writeText(raw);p.prepend(bar);
+});
+const hs=$$('article h2');if(hs.length>1){$('#toc').innerHTML='<b>ON THIS PAGE</b>'+hs.map(h=>`<a href="#${h.id}">${h.textContent}</a>`).join('');const o=new IntersectionObserver(e=>e.forEach(x=>x.isIntersecting&&$$('#toc a').forEach(a=>a.classList.toggle('on',a.hash=='#'+x.target.id))),{rootMargin:'-20% 0px -70% 0px'});hs.forEach(h=>o.observe(h))}
+$('#mb').onclick=()=>document.body.classList.toggle('open');
+const P=$('#pal'),pi=$('#pi'),pl=$('#pl');let cur=[],sel=0;
+const pr=()=>{const q=pi.value.toLowerCase();cur=IDX.filter(i=>(i[0]+' '+i[2]).toLowerCase().includes(q)).slice(0,9);sel=Math.min(sel,Math.max(cur.length-1,0));pl.innerHTML=cur.map((c,i)=>`<a href="${R+c[1]}" class="${i==sel?'on':''}">${c[0]}<small>${c[2]}</small></a>`).join('')};
+const op=v=>{P.classList.toggle('on',v);if(v){pi.value='';sel=0;pr();pi.focus()}};
+$('#sk').onclick=()=>op(1);P.onclick=e=>e.target==P&&op(0);pi.oninput=()=>{sel=0;pr()};
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key=='k'){e.preventDefault();op(1)}else if(e.key=='Escape')op(0);else if(P.classList.contains('on')){if(e.key=='ArrowDown'){sel=Math.min(sel+1,cur.length-1);pr()}else if(e.key=='ArrowUp'){sel=Math.max(sel-1,0);pr()}else if(e.key=='Enter'&&cur[sel])location.href=R+cur[sel][1]}});
+</script></body></html>
+

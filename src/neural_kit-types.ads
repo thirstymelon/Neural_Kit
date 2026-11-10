@@ -1,12 +1,21 @@
 package Neural_Kit.Types is
+   pragma Pure (Neural_Kit.Types);
 
-   subtype Scalar_T is Float;
-   subtype Weight_T is Scalar_T;
-   subtype Bias_T is Scalar_T;
+   subtype Scalar is Float;
+   subtype Weight is Scalar;
+   subtype Bias is Scalar;
 
-   Feature_Count : constant Positive := 2;
+   type Vector is array (Positive range <>) of Scalar;
 
-   type Features_T is array (1 .. Feature_Count) of Scalar_T;
-   type Weights_T is array (1 .. Feature_Count) of Weight_T;
+   type Matrix is array (Positive range <>, Positive range <>) of Scalar;
+
+   subtype Features_T is Vector;
+   subtype Weights_T is Vector;
+   subtype Scalar_T is Scalar;
+   subtype Weight_T is Weight;
+   subtype Bias_T is Bias;
+
+   Dimension_Error : exception;
+   Numerical_Error : exception;
 
 end Neural_Kit.Types;

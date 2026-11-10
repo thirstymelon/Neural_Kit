@@ -16,6 +16,10 @@ example/bin/
 example/alire/
 example/config/
 
+# Test project build artifacts
+tests/obj/
+tests/bin/
+
 # Generated GPRbuild files
 *.ali
 *.o
@@ -31,6 +35,10 @@ b__*.ads
 # Generated compiler output
 *.stdout
 *.stderr
+
+# Reference files
+README copy.md
+Loom_Docs/
 
 # macOS
 .DS_Store

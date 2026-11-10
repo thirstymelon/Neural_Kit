@@ -1,0 +1,103 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Developer overview · Neural_Kit 0.2.0</title><link rel=stylesheet href="styles.css"><link rel="icon" type="image/png" href="assets/logo.png"></head><body data-r=""><header><div class=w><a class=brand href="index.html"><img src="assets/logo.png" alt="Neural_Kit"><span>Neural_Kit<i>.</i><sup>0.2.0</sup></span></a><nav><a href="getting-started.html">Start</a><a href="tutorials/index.html">Tutorials</a><a href="developer-overview.html" class=on>Developer</a><a href="reference.html">Reference</a></nav><button class=sb id=sk>Search <kbd>Ctrl K</kbd></button><button class=mb id=mb aria-label=Menu>≡</button></div></header><div class="w doc"><article>
+<p class=eb>Architecture & Internals</p><h1>Developer overview</h1>
+<p class=lead>A deep dive into the engineering principles, memory models, contract-based verification, and numerical stability design of Neural_Kit.</p>
+
+<h2 id="philosophy">The Ada advantage in deep learning</h2>
+<p>Modern machine learning frameworks (like PyTorch and TensorFlow) are typically built on a hybrid architecture: high-level Python glue wrapping complex C++ backends. While flexible for research, this architecture introduces major operational challenges in production pipelines and robust systems:</p>
+<ul>
+<li><b>Garbage Collection Overhead:</b> Python runtimes introduce non-deterministic garbage collection cycles and memory fragmentation that degrade throughput during intensive training loops and high-concurrency inference services.</li>
+<li><b>Memory Safety Vulnerabilities:</b> C++ tensor memory management is prone to out-of-bounds pointer corruptions, buffer overflows, and use-after-free defects that can compromise server reliability.</li>
+<li><b>Silent Shape Mismatches:</b> In dynamically-typed frameworks, implicit array broadcasting often conceals bugs where tensors of incompatible dimensions silently combine into unintended shapes without warning.</li>
+</ul>
+<p><b>Neural_Kit</b> is designed to provide an alternative: a pure, strongly-typed machine learning framework built natively in <b>Ada 2022</b>. It offers deterministic stack allocation, formal dimension verification via preconditions, and high numerical stability.</p>
+
+<h2 id="memory-model">Memory model: Zero-GC unconstrained arrays</h2>
+<p>In Neural_Kit, linear algebra structures are represented as <b>unconstrained Ada arrays</b>:</p>
+<pre><code>type Vector is array (Positive range <>) of Scalar;
+type Matrix is array (Positive range <>, Positive range <>) of Scalar;</code></pre>
+
+<h3>Why unconstrained arrays instead of heap pointers?</h3>
+<ol>
+<li><b>Stack Allocation:</b> Local vectors and intermediate matrix operations are allocated on the secondary stack or runtime stack. When a function finishes execution, its memory is reclaimed instantly without a garbage collector.</li>
+<li><b>Positional Slicing:</b> Ada arrays can have arbitrary valid bounds (e.g., <code>V (5 .. 8)</code>). Neural_Kit's mathematical subprograms match elements <i>positionally</i> from first to last, rather than assuming that every array starts at index 1.</li>
+<li><b>Pass-by-Reference:</b> Large vectors and matrices are passed efficiently by reference under the hood by the GNAT compiler, avoiding expensive memory copies.</li>
+</ol>
+
+<h2 id="matrix-convention">Matrix dimension conventions</h2>
+<p>Neural_Kit strictly follows the standard mathematical and neural network conventions:</p>
+<ul>
+<li><b>Rows represent Output Neurons.</b></li>
+<li><b>Columns represent Input Features.</b></li>
+</ul>
+<p>Therefore, when computing layer feed-forward inference:</p>
+<p><code>y = W · x + b</code></p>
+<p>where <b>W</b> has dimensions (Rows × Cols), <b>x</b> has length Cols, <b>b</b> has length Rows, and the resulting vector <b>y</b> has length equal to Rows.</p>
+
+<h2 id="contracts">Design by Contract & Exception Semantics</h2>
+<p>Neural_Kit relies on Ada 2022 contracts (<code>with Pre => ..., Post => ...</code>) to guarantee mathematical compatibility before executing any loop.</p>
+
+<table>
+<tr><th>Error Condition<th>Enforcement Mechanism<th>Exception Raised</tr>
+<tr><td><b>Dimension Mismatch (contracts on)</b><td>Precondition check (e.g. <code>A'Length = B'Length</code>)<td><code>Ada.Assertions.Assertion_Error</code></tr>
+<tr><td><b>Dimension Mismatch (contracts off)</b><td>Explicit dynamic check in procedure body<td><code>Neural_Kit.Types.Dimension_Error</code></tr>
+<tr><td><b>Invalid Numerical Domain</b><td>Domain check (e.g., BCE target outside [0.0, 1.0])<td><code>Neural_Kit.Types.Numerical_Error</code></tr>
+<tr><td><b>Invalid Float / NaN</b><td>Floating point attribute check (<code>not X'Valid</code>)<td><code>Neural_Kit.Types.Numerical_Error</code></tr>
+</table>
+
+<pre><code>--  Example of strict contract specification in Neural_Kit.Math
+function Multiply (M : Matrix; V : Vector) return Vector
+  with Pre  => M'Length (2) = V'Length,
+       Post => Multiply'Result'Length = M'Length (1)
+       and then Multiply'Result'First = 1;</code></pre>
+
+<h2 id="numerical-hardening">Numerical stability engineering</h2>
+<p>Training neural networks frequently encounters boundary values that can derail computation if not guarded:</p>
+
+<h3>1. Softmax Maximum-Value Subtraction</h3>
+<p>Evaluating e<sup>z</sup> directly can easily exceed 32-bit float limits (e<sup>89</sup> ≈ 10<sup>38</sup>). Neural_Kit computes Softmax using shift invariance:</p>
+<p><code>Softmax(z<sub>i</sub>) = e<sup>z<sub>i</sub> - max(z)</sup> / ∑ e<sup>z<sub>j</sub> - max(z)</sup></code></p>
+<p>Since the maximum exponent is now e<sup>0</sup> = 1.0, floating-point overflow is mathematically impossible.</p>
+
+<h3>2. Sigmoid Clamping</h3>
+<p>For inputs |z| &gt; 45.0, e<sup>-z</sup> underflows or overflows. Neural_Kit returns exact saturated limits: 0.0 for z &lt; -45.0 and 1.0 for z &gt; 45.0.</p>
+
+<h3>3. Loss Epsilon Protection</h3>
+<p>Binary cross-entropy involves ln(p) and ln(1 - p). If a prediction reaches 0.0 or 1.0, ln(0) evaluates to -∞. Neural_Kit automatically clamps inputs to [ε, 1.0 - ε] where ε = 10⁻⁷.</p>
+
+<h2 id="prng">PRNG & Statistical Reproducibility</h2>
+<p>Neural_Kit uses <b>PCG32 (Permuted Congruential Generator XSH-RR 64/32)</b> for pseudo-random number generation:</p>
+<ul>
+<li><b>State:</b> 64-bit state and 64-bit increment, producing a period of 2<sup>64</sup>.</li>
+<li><b>Independence:</b> The generator is encapsulated inside <code>type Generator is limited private;</code>. There is zero hidden global state, allowing multiple independent threads or simulations to run side by side without interference.</li>
+<li><b>Box-Muller Normal Sampling:</b> Transforms uniform random variables into Gaussian distributions using spare-value caching to avoid redundant logarithmic and trigonometric calls.</li>
+</ul>
+
+<div class="pn"><a href="tutorials/index.html"><small>PREVIOUS</small>Tutorials hub</a><a href="reference.html"><small>NEXT</small>API reference</a></div>
+
+</article><aside id=toc></aside></div><footer><div class=w><span>Neural_Kit 0.2.0 · Developer Guide</span><span>Architecture & Internals</span></div></footer><div id=pal><div><input id=pi placeholder="Search the docs…"><div id=pl></div></div></div>
+<script>
+const IDX=[["Overview", "index.html", "Home"], ["Getting started", "getting-started.html", "Guide"], ["Tutorials index", "tutorials/index.html", "Course"], ["Beginner tutorial guide", "tutorials/beginner-guide.html", "Tutorial"], ["Developer overview", "developer-overview.html", "Architecture"], ["API reference", "reference.html", "API"]];
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],R=document.body.dataset.r;
+const RE=/(--[^\n]*)|("(?:[^"\\]|\\.)*")|\b(0x[0-9a-fA-F_]+|\d[\d_]*(?:\.\d+)?)\b|\b(with|use|package|body|is|begin|end|function|procedure|return|type|subtype|tagged|record|limited|private|constant|array|of|range|digits|in|out|loop|for|while|if|then|elsif|else|case|when|raise|exception|pragma|null|others)\b|\b(Scalar|Vector|Matrix|Neuron|Layer|Positive|Natural|Integer|Float|Long_Float|Boolean|True|False)\b|('Range|'Length|'First|'Last|'Result|'Valid|'Image|'Access)|(\+|-|\*|\/|:=|=>|\.\.|<=|>=|\/=|=|<|>)/g;
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+$$('pre').forEach(p=>{
+  const c=p.querySelector('code');if(!c)return;const raw=c.textContent,isSh=p.classList.contains('sh');
+  let title=isSh?'Terminal — zsh':'architecture.adb';
+  if(!isSh){
+    const hl=esc(raw).replace(RE,(m,cm,st,nu,kw,ty,at,op)=>cm?`<span class="c">${cm}</span>`:st?`<span class="s">${st}</span>`:nu?`<span class="n">${nu}</span>`:kw?`<span class="k">${kw}</span>`:ty?`<span class="t">${ty}</span>`:at?`<span class="b">${at}</span>`:op?`<span class="o">${op}</span>`:m);
+    c.innerHTML=hl.split('\n').map(l=>`<span class="line">${l||' '}</span>`).join('');
+  } else {
+    c.innerHTML=esc(raw).replace(/(#[^\n]*)|("(?:[^"\\]|\\.)*")|(--?[a-zA-Z0-9_-]+)|\b(alr|gprbuild|cd|mkdir|git)\b|\b(build|run|test|get|init|status)\b/g,(m,cm,st,fl,cmd,sc)=>cm?`<span class="c">${cm}</span>`:st?`<span class="s">${st}</span>`:fl?`<span class="flg">${fl}</span>`:cmd?`<span class="cmd">${cmd}</span>`:sc?`<span class="sc">${sc}</span>`:m);
+  }
+  const bar=document.createElement('div');bar.className='mac-bar';bar.innerHTML=`<div class="mac-dots"><span class="mac-dot r"></span><span class="mac-dot y"></span><span class="mac-dot g"></span></div><div class="mac-title">${title}</div><button class="cb" type="button">Copy</button>`;
+  bar.querySelector('.cb').onclick=()=>navigator.clipboard.writeText(raw);p.prepend(bar);
+});
+const hs=$$('article h2');if(hs.length>1){$('#toc').innerHTML='<b>ON THIS PAGE</b>'+hs.map(h=>`<a href="#${h.id}">${h.textContent}</a>`).join('');const o=new IntersectionObserver(e=>e.forEach(x=>x.isIntersecting&&$$('#toc a').forEach(a=>a.classList.toggle('on',a.hash=='#'+x.target.id))),{rootMargin:'-20% 0px -70% 0px'});hs.forEach(h=>o.observe(h))}
+$('#mb').onclick=()=>document.body.classList.toggle('open');
+const P=$('#pal'),pi=$('#pi'),pl=$('#pl');let cur=[],sel=0;
+const pr=()=>{const q=pi.value.toLowerCase();cur=IDX.filter(i=>(i[0]+' '+i[2]).toLowerCase().includes(q)).slice(0,9);sel=Math.min(sel,Math.max(cur.length-1,0));pl.innerHTML=cur.map((c,i)=>`<a href="${R+c[1]}" class="${i==sel?'on':''}">${c[0]}<small>${c[2]}</small></a>`).join('')};
+const op=v=>{P.classList.toggle('on',v);if(v){pi.value='';sel=0;pr();pi.focus()}};
+$('#sk').onclick=()=>op(1);P.onclick=e=>e.target==P&&op(0);pi.oninput=()=>{sel=0;pr()};
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key=='k'){e.preventDefault();op(1)}else if(e.key=='Escape')op(0);else if(P.classList.contains('on')){if(e.key=='ArrowDown'){sel=Math.min(sel+1,cur.length-1);pr()}else if(e.key=='ArrowUp'){sel=Math.max(sel-1,0);pr()}else if(e.key=='Enter'&&cur[sel])location.href=R+cur[sel][1]}});
+</script></body></html>
+
