@@ -10,10 +10,10 @@
 [![Language](https://img.shields.io/badge/language-Ada%202022-blue.svg)](https://www.adaic.org/ada-resources/standards/ada22/)
 [![Build](https://img.shields.io/badge/build-Alire%20%7C%20GNAT-brightgreen.svg)](https://alire.ada.dev/)
 [![Tests](https://img.shields.io/badge/tests-113%20passed-success.svg)](tests/)
-[![Memory](https://img.shields.io/badge/memory-Zero--GC%20Deterministic-informational.svg)](Docs/developer-overview.html)
+[![Memory](https://img.shields.io/badge/memory-Zero--GC%20Deterministic-informational.svg)](https://thirstymelon.github.io/Neural_Kit/developer-overview.html)
 [![License](https://img.shields.io/badge/license-MIT%20%2F%20Apache%202.0-blue.svg)](LICENSE)
 
-[Documentation Hub](Docs/index.html) • [Getting Started](Docs/getting-started.html) • [Beginner's Course](Docs/tutorials/beginner-guide.html) • [Developer Overview](Docs/developer-overview.html) • [API Reference](Docs/reference.html)
+[Documentation Hub](https://thirstymelon.github.io/Neural_Kit/) • [Getting Started](https://thirstymelon.github.io/Neural_Kit/getting-started.html) • [Beginner's Course](https://thirstymelon.github.io/Neural_Kit/tutorials/beginner-guide.html) • [Developer Overview](https://thirstymelon.github.io/Neural_Kit/developer-overview.html) • [API Reference](https://thirstymelon.github.io/Neural_Kit/reference.html)
 
 </div>
 
@@ -87,15 +87,15 @@ end Main;
 
 ## Comprehensive Documentation
 
-For in-depth explanations, setup guides, step-by-step interactive lessons, architectural deep dives, and complete API specifications, explore the offline documentation suite in [`Docs/`](Docs/):
+For in-depth explanations, setup guides, step-by-step interactive lessons, architectural deep dives, and complete API specifications, explore the official documentation website:
 
-- [**Documentation Hub**](Docs/index.html): Central gateway, architecture overview, quick start, and Ctrl+K search palette.
-- [**Getting Started Guide**](Docs/getting-started.html): Installation, toolchain setup with Alire, building the static library, and configuring your first project.
-- [**Beginner's Course (7 Lessons)**](Docs/tutorials/beginner-guide.html): A complete hands-on course covering scalars, vectors, linear algebra, activations, loss functions, PRNG, single-neuron AND gate training, and dense multi-neuron layers with progress tracking.
-- [**Developer & Architectural Overview**](Docs/developer-overview.html): Deep dive into the unconstrained array memory model, Design by Contract semantics, matrix conventions, and numerical stability engineering.
-- [**Technical API Reference**](Docs/reference.html): Authoritative technical specifications for all types, subprograms, contracts, and error conditions across `Types`, `Math`, `Random`, `Neuron`, and `Layer`.
+- [**Documentation Hub**](https://thirstymelon.github.io/Neural_Kit/): Central gateway, architecture overview, quick start, and Ctrl+K search palette.
+- [**Getting Started Guide**](https://thirstymelon.github.io/Neural_Kit/getting-started.html): Installation, toolchain setup with Alire, building the static library, and configuring your first project.
+- [**Beginner's Course (7 Lessons)**](https://thirstymelon.github.io/Neural_Kit/tutorials/beginner-guide.html): A complete hands-on course covering scalars, vectors, linear algebra, activations, loss functions, PRNG, single-neuron AND gate training, and dense multi-neuron layers with progress tracking.
+- [**Developer & Architectural Overview**](https://thirstymelon.github.io/Neural_Kit/developer-overview.html): Deep dive into the unconstrained array memory model, Design by Contract semantics, matrix conventions, and numerical stability engineering.
+- [**Technical API Reference**](https://thirstymelon.github.io/Neural_Kit/reference.html): Authoritative technical specifications for all types, subprograms, contracts, and error conditions across `Types`, `Math`, `Random`, `Neuron`, and `Layer`.
 
-*The entire documentation suite is standalone and fully functional offline. Simply open `Docs/index.html` in any web browser.*
+*The entire documentation suite is also available offline inside [`Docs/`](Docs/). Simply open `Docs/index.html` in any web browser.*
 
 ---
 
