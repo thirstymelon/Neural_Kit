@@ -1,4 +1,4 @@
-name = "example"
+name = "mnist_classifier"
 description = ""
 version = "0.1.0-dev"
 
@@ -9,4 +9,10 @@ licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
 website = ""
 tags = []
 
-executables = ["example"]
+executables = ["mnist_classifier"]
+
+[[depends-on]]
+neural_kit = "~0.1.0-dev"
+
+[[pins]]
+neural_kit = { path='../..' }

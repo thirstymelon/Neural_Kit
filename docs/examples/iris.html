@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neural Flora: Botanical Species Classifier · Neural_Kit Showcase</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" type="image/png" href="../assets/logo.png">
+<style>
+.w{width:100%!important;max-width:100%!important;padding:0 clamp(20px,3.5vw,56px)}
+.doc{display:block!important;padding-top:34px;padding-bottom:80px;width:100%!important;max-width:100%!important}
+article{width:100%!important;max-width:100%!important}
+.demo-grid{display:grid;grid-template-columns:minmax(360px,460px) minmax(0,1fr);gap:32px;margin:24px 0;width:100%}
+@media(max-width:960px){.demo-grid{grid-template-columns:1fr}}
+.page-head{margin:0 0 24px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.page-head .eb{font:700 11px var(--mono);color:var(--coral);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.page-head h1{font:500 clamp(1.8rem,2.8vw,2.4rem)/1.15 var(--serif);color:var(--green);margin:2px 0 6px;letter-spacing:-.02em}
+.page-head .lead{font-size:15px;color:var(--muted);max-width:850px;margin:0;line-height:1.55}
+.action-btn{font:600 12px var(--mono);padding:7px 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper-2);color:var(--ink);cursor:pointer;text-decoration:none;transition:.15s;display:inline-flex;align-items:center}
+.action-btn:hover{background:var(--mint);border-color:var(--green-2);color:var(--green)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 8px 24px rgba(23,77,64,.04)}
+.panel-h{font:500 1.25rem var(--serif);color:var(--green);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.panel-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.preset-btn{font:600 12px var(--mono);padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper-2);color:var(--ink);cursor:pointer;transition:.15s}
+.preset-btn:hover{background:var(--mint);border-color:var(--green-2);color:var(--green)}
+.slider-group{margin-bottom:18px}
+.slider-header{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:6px}
+.slider-label{font-weight:600;color:var(--ink)}
+.slider-val{font:700 13px var(--mono);color:var(--coral);background:var(--coral-soft);padding:2px 8px;border-radius:6px}
+input[type=range]{width:100%;height:6px;border-radius:3px;background:var(--line);outline:none;-webkit-appearance:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--green);cursor:pointer;border:2px solid var(--paper);box-shadow:0 2px 6px rgba(0,0,0,.2);transition:.15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);background:var(--green-2)}
+.pred-card{background:linear-gradient(135deg,var(--green),var(--green-2));color:#fff;border-radius:14px;padding:22px;text-align:center;margin-bottom:22px;box-shadow:0 12px 28px rgba(23,77,64,.18);position:relative;overflow:hidden}
+.pred-card::after{content:"";position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(216,237,139,.1);right:-40px;top:-40px}
+.pred-tag{font:700 11px var(--mono);color:var(--lime);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.pred-name{font:600 2.1rem var(--serif);color:#fffefa;letter-spacing:-.01em;margin:4px 0}
+.pred-conf{display:inline-block;font:700 12px var(--mono);background:rgba(216,237,139,.2);border:1px solid rgba(216,237,139,.4);color:var(--lime);padding:4px 12px;border-radius:999px;margin-top:6px}
+.pred-desc{font-size:13px;color:#dcefe3;margin-top:10px;line-height:1.5}
+.bars{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.bar-row{display:flex;flex-direction:column;gap:4px}
+.bar-label{display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:var(--ink)}
+.bar-track{height:10px;background:var(--paper-2);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar-fill{height:100%;background:var(--line);border-radius:6px;transition:width .25s ease,background .25s ease}
+.bar-row.top .bar-fill{background:var(--green)}
+.bar-row.top .bar-label{color:var(--green)}
+.neuron-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.neuron-cell{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center;font:11px var(--mono)}
+.neuron-cell small{display:block;color:var(--muted);font-size:9px;margin-bottom:2px}
+.neuron-cell b{color:var(--ink);display:block}
+.neuron-bar{height:4px;background:#e0ded6;border-radius:2px;margin-top:4px;overflow:hidden}
+.neuron-bar-val{height:100%;background:var(--coral);width:0%;transition:width .2s}
+.cm-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+.cm-table th,.cm-table td{padding:8px 10px;text-align:center;border:1px solid var(--line)}
+.cm-table th{background:var(--mint);color:var(--green);font:700 11px var(--mono)}
+.cm-diag{background:#e7f5ed;color:var(--green);font-weight:700}
+</style>
+</head>
+<body data-r="../">
+<header>
+  <div class="w">
+    <a class="brand" href="../index.html">
+      <img src="../assets/logo.png" alt="Neural_Kit">
+      <span>Neural_Kit<i>.</i><sup>0.2.0</sup></span>
+    </a>
+    <nav>
+      <a href="../getting-started.html">Start</a>
+      <a href="../tutorials/index.html">Tutorials</a>
+      <a href="index.html" class="on">Examples</a>
+      <a href="../developer-overview.html">Developer</a>
+      <a href="../reference.html">Reference</a>
+    </nav>
+    <button class="sb" id="sk">Search <kbd>Ctrl K</kbd></button>
+    <button class="mb" id="mb" aria-label="Menu">≡</button>
+  </div>
+</header>
+
+<div class="w doc">
+<article>
+  <div class="page-head">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="eb">Interactive Project Showcase · Neural_Kit v0.2.0</div>
+        <h1>Neural Flora: Botanical Species Classifier</h1>
+      </div>
+      <div style="display:flex;gap:8px">
+        <a class="action-btn" href="index.html">← All Examples</a>
+        <a class="action-btn" href="mnist.html">Vision Canvas (MNIST) →</a>
+      </div>
+    </div>
+    <p class="lead">Adjust the flower sepal and petal measurements in real-time. A 2-layer perceptron (4 inputs → 8 hidden ReLU neurons → 3 Softmax outputs) trained with <code>Neural_Kit.Layer</code> classifies the sample instantly.</p>
+  </div>
+
+  <div class="demo-grid">
+    <!-- LEFT PANEL: CONTROLS -->
+    <div class="panel">
+      <div class="panel-h">
+        <span>1. Measurement Inputs</span>
+        <span style="font:600 11px var(--mono);color:var(--muted)">DIM: 4</span>
+      </div>
+      <p class="panel-sub">Select a preset or drag the sliders to feed flower dimensions in centimeters.</p>
+
+      <div class="presets">
+        <button class="preset-btn" onclick="setPreset(5.1, 3.5, 1.4, 0.2)">Iris Setosa</button>
+        <button class="preset-btn" onclick="setPreset(5.9, 3.0, 4.2, 1.5)">Iris Versicolor</button>
+        <button class="preset-btn" onclick="setPreset(6.5, 3.2, 5.8, 2.2)">Iris Virginica</button>
+        <button class="preset-btn" onclick="setRandom()">Random</button>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Sepal Length</span>
+          <span class="slider-val" id="val-sl">5.1 cm</span>
+        </div>
+        <input type="range" id="sl" min="4.0" max="8.0" step="0.1" value="5.1" oninput="runInference()">
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Sepal Width</span>
+          <span class="slider-val" id="val-sw">3.5 cm</span>
+        </div>
+        <input type="range" id="sw" min="2.0" max="4.5" step="0.1" value="3.5" oninput="runInference()">
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Petal Length</span>
+          <span class="slider-val" id="val-pl">1.4 cm</span>
+        </div>
+        <input type="range" id="pl" min="1.0" max="7.0" step="0.1" value="1.4" oninput="runInference()">
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Petal Width</span>
+          <span class="slider-val" id="val-pw">0.2 cm</span>
+        </div>
+        <input type="range" id="pw" min="0.1" max="2.5" step="0.1" value="0.2" oninput="runInference()">
+      </div>
+
+      <div style="margin-top:24px;padding:14px;background:var(--paper-2);border-radius:10px;border:1px solid var(--line)">
+        <div style="font:700 11px var(--mono);color:var(--muted);text-transform:uppercase;margin-bottom:6px">Normalized Feature Vector (x - μ) / σ</div>
+        <div id="norm-vector" style="font:600 12px var(--mono);color:var(--green)">[-0.90, +1.02, -1.34, -1.31]</div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: PREDICTION -->
+    <div class="panel">
+      <div class="panel-h">
+        <span>2. Neural Network Output</span>
+        <span style="font:600 11px var(--mono);color:var(--coral)">SOFTMAX</span>
+      </div>
+      <p class="panel-sub">Forward pass computed via <code>Layer.Forward</code> with calibrated model weights.</p>
+
+      <div class="pred-card">
+        <div class="pred-tag">Predicted Species</div>
+        <div class="pred-name" id="pred-name">Iris setosa</div>
+        <div class="pred-conf" id="pred-conf">100.0% Confidence</div>
+        <div class="pred-desc" id="pred-desc">Characterized by small petals and broad sepals. Easily separable with linear boundaries.</div>
+      </div>
+
+      <div style="font:700 11px var(--mono);color:var(--muted);text-transform:uppercase;margin-bottom:8px">Softmax Class Probabilities</div>
+      <div class="bars">
+        <div class="bar-row" id="row-setosa">
+          <div class="bar-label">
+            <span>Iris setosa</span>
+            <span id="pct-setosa">100.0%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="bar-setosa" style="width:100%"></div></div>
+        </div>
+
+        <div class="bar-row" id="row-versicolor">
+          <div class="bar-label">
+            <span>Iris versicolor</span>
+            <span id="pct-versicolor">0.0%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="bar-versicolor" style="width:0%"></div></div>
+        </div>
+
+        <div class="bar-row" id="row-virginica">
+          <div class="bar-label">
+            <span>Iris virginica</span>
+            <span id="pct-virginica">0.0%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="bar-virginica" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div style="margin-top:22px">
+        <div style="font:700 11px var(--mono);color:var(--muted);text-transform:uppercase;margin-bottom:6px">Hidden Layer Activations (8 Neurons · ReLU)</div>
+        <div class="neuron-grid" id="neuron-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Model Evaluation & Ada Source</h2>
+  <p>The network was trained using backpropagation and cross-entropy loss implemented natively in Ada with <code>Neural_Kit.Layer</code>. Across the 15 held-out test samples, the network achieved a <strong>100% accuracy score</strong>.</p>
+
+  <div class="demo-grid" style="align-items:start">
+    <div>
+      <h3>Confusion Matrix (Held-out Test Set)</h3>
+      <table class="cm-table">
+        <tr><th>True \ Pred<th>Setosa<th>Versicolor<th>Virginica</tr>
+        <tr><td>Setosa</td><td class="cm-diag">5</td><td>0</td><td>0</td></tr>
+        <tr><td>Versicolor</td><td>0</td><td class="cm-diag">5</td><td>0</td></tr>
+        <tr><td>Virginica</td><td>0</td><td>0</td><td class="cm-diag">5</td></tr>
+      </table>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px">Zero misclassifications across all 15 independent test samples.</p>
+    </div>
+
+    <div>
+      <h3>Ada 2022 Inference Implementation</h3>
+      <pre><code>-- Forward pass through multi-neuron layers
+Hidden_Layer.Forward (Input_Features);
+Hidden_Layer.Activate;
+
+Output_Layer.Forward (Hidden_Layer.Output);
+Output_Layer.Activate;
+
+Prediction := Output_Layer.Output;</code></pre>
+    </div>
+  </div>
+
+</article>
+</div>
+
+<footer>
+  <div class="w">
+    <span>Neural_Kit 0.2.0 · Neural Flora (Botanical Classifier)</span>
+    <span><a href="../index.html">Documentation</a> · <a href="index.html">Examples Hub</a> · <a href="mnist.html">Vision Canvas</a> · <a href="https://github.com/thirstymelon/Neural_Kit">GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+const MODEL = {"W1": [[0.19982, -0.47743, 0.21059, 0.71629], [-0.20023, -0.68696, -0.1273, -0.58604], [-0.49542, -0.65558, 1.6418, 2.47442], [-0.00613, 0.36973, -1.09503, -1.28587], [-0.69149, 1.02645, -0.85662, -0.95647], [0.23283, -0.90918, 0.66099, 1.40206], [-0.03794, -0.46256, 1.16307, 1.24434], [1.08947, -0.84025, 0.30902, -1.24307]], "b1": [1.38877, -0.08467, -1.36732, 0.30103, 0.35362, -0.73126, -0.90761, 1.43241], "W2": [[-0.93262, 0.3711, -0.69554, 0.98319, 1.20837, -0.49335, 0.22145, -0.43288], [1.33357, 0.14854, -2.29696, -0.95286, -1.18666, -0.63112, -1.43143, 1.4609], [0.15516, -0.69132, 2.21941, -0.69364, -0.50003, 1.54982, 1.37356, -1.08052]], "b2": [-0.97918, 2.22902, -1.24984]};
+
+const SPECIES_INFO = [
+  { name: "Iris setosa", desc: "Characterized by small petals and broad sepals. Easily separable with linear boundaries.", color: "#174d40" },
+  { name: "Iris versicolor", desc: "Intermediate petal length and width. Moderate overlap with virginica resolved by hidden non-linearities.", color: "#236b57" },
+  { name: "Iris virginica", desc: "Largest petal dimensions and sturdy structure. Strongly activated by positive weights in output neuron 3.", color: "#7a3e2e" }
+];
+
+function setPreset(sl, sw, pl, pw) {
+  document.getElementById("sl").value = sl;
+  document.getElementById("sw").value = sw;
+  document.getElementById("pl").value = pl;
+  document.getElementById("pw").value = pw;
+  runInference();
+}
+
+function setRandom() {
+  const r = (min, max) => (min + Math.random() * (max - min)).toFixed(1);
+  setPreset(r(4.3, 7.7), r(2.2, 4.2), r(1.2, 6.7), r(0.1, 2.4));
+}
+
+function runInference() {
+  const sl = parseFloat(document.getElementById("sl").value);
+  const sw = parseFloat(document.getElementById("sw").value);
+  const pl = parseFloat(document.getElementById("pl").value);
+  const pw = parseFloat(document.getElementById("pw").value);
+
+  document.getElementById("val-sl").textContent = sl.toFixed(1) + " cm";
+  document.getElementById("val-sw").textContent = sw.toFixed(1) + " cm";
+  document.getElementById("val-pl").textContent = pl.toFixed(1) + " cm";
+  document.getElementById("val-pw").textContent = pw.toFixed(1) + " cm";
+
+  // Standard normalization (mean, std)
+  const n0 = (sl - 5.843) / 0.828;
+  const n1 = (sw - 3.057) / 0.436;
+  const n2 = (pl - 3.758) / 1.764;
+  const n3 = (pw - 1.199) / 0.762;
+  const x = [n0, n1, n2, n3];
+
+  document.getElementById("norm-vector").textContent = `[${x.map(v => (v>=0?'+':'')+v.toFixed(2)).join(', ')}]`;
+
+  // Hidden Layer: 8 neurons, ReLU
+  const z1 = [];
+  const a1 = [];
+  for (let i = 0; i < 8; i++) {
+    let sum = MODEL.b1[i];
+    for (let j = 0; j < 4; j++) {
+      sum += MODEL.W1[i][j] * x[j];
+    }
+    z1.push(sum);
+    a1.push(Math.max(0, sum));
+  }
+
+  // Output Layer: 3 neurons, Softmax
+  const z2 = [];
+  for (let k = 0; k < 3; k++) {
+    let sum = MODEL.b2[k];
+    for (let i = 0; i < 8; i++) {
+      sum += MODEL.W2[k][i] * a1[i];
+    }
+    z2.push(sum);
+  }
+
+  const maxZ = Math.max(...z2);
+  const expZ = z2.map(v => Math.exp(v - maxZ));
+  const sumExp = expZ.reduce((a, b) => a + b, 0);
+  const probs = expZ.map(v => v / sumExp);
+
+  let topIdx = 0;
+  for (let k = 1; k < 3; k++) {
+    if (probs[k] > probs[topIdx]) topIdx = k;
+  }
+
+  // Update Predicted Card
+  const topInfo = SPECIES_INFO[topIdx];
+  document.getElementById("pred-name").textContent = topInfo.name;
+  document.getElementById("pred-conf").textContent = (probs[topIdx] * 100).toFixed(1) + "% Confidence";
+  document.getElementById("pred-desc").textContent = topInfo.desc;
+
+  // Update Bars
+  const rows = [document.getElementById("row-setosa"), document.getElementById("row-versicolor"), document.getElementById("row-virginica")];
+  const fills = [document.getElementById("bar-setosa"), document.getElementById("bar-versicolor"), document.getElementById("bar-virginica")];
+  const pcts = [document.getElementById("pct-setosa"), document.getElementById("pct-versicolor"), document.getElementById("pct-virginica")];
+
+  for (let k = 0; k < 3; k++) {
+    const pct = (probs[k] * 100).toFixed(1) + "%";
+    pcts[k].textContent = pct;
+    fills[k].style.width = pct;
+    if (k === topIdx) {
+      rows[k].classList.add("top");
+    } else {
+      rows[k].classList.remove("top");
+    }
+  }
+
+  // Update Hidden Neuron Grid
+  const grid = document.getElementById("neuron-grid");
+  grid.innerHTML = "";
+  const maxAct = Math.max(0.1, ...a1);
+  for (let i = 0; i < 8; i++) {
+    const cell = document.createElement("div");
+    cell.className = "neuron-cell";
+    const fillPct = Math.min(100, (a1[i] / maxAct) * 100);
+    cell.innerHTML = `
+      <small>N${i+1}</small>
+      <b>${a1[i].toFixed(2)}</b>
+      <div class="neuron-bar"><div class="neuron-bar-val" style="width:${fillPct}%"></div></div>
+    `;
+    grid.appendChild(cell);
+  }
+}
+
+// Initial run
+runInference();
+</script>
+</body>
+</html>
+

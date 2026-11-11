@@ -1,15 +1,16 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Overview · Neural_Kit 0.2.0</title><link rel=stylesheet href="styles.css"><link rel="icon" type="image/png" href="assets/logo.png"></head><body data-r=""><header><div class=w><a class=brand href="index.html"><img src="assets/logo.png" alt="Neural_Kit"><span>Neural_Kit<i>.</i><sup>0.2.0</sup></span></a><nav><a href="getting-started.html">Start</a><a href="tutorials/index.html">Tutorials</a><a href="developer-overview.html">Developer</a><a href="reference.html">Reference</a></nav><button class=sb id=sk>Search <kbd>Ctrl K</kbd></button><button class=mb id=mb aria-label=Menu>≡</button></div></header><div class="w doc"><article>
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Overview · Neural_Kit 0.2.0</title><link rel=stylesheet href="styles.css"><link rel="icon" type="image/png" href="assets/logo.png"></head><body data-r=""><header><div class=w><a class=brand href="index.html"><img src="assets/logo.png" alt="Neural_Kit"><span>Neural_Kit<i>.</i><sup>0.2.0</sup></span></a><nav><a href="getting-started.html">Start</a><a href="tutorials/index.html">Tutorials</a><a href="examples/index.html">Examples</a><a href="developer-overview.html">Developer</a><a href="reference.html">Reference</a></nav><button class=sb id=sk>Search <kbd>Ctrl K</kbd></button><button class=mb id=mb aria-label=Menu>≡</button></div></header><div class="w doc"><article>
 <div class="hero">
-<div style="display:flex;align-items:center;gap:20px;margin-bottom:20px">
-  <img src="assets/icon.png" alt="Neural_Kit Logo" width="130" height="130" style="object-fit:contain;display:block">
+<div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+  <img src="assets/logo.png" alt="Neural_Kit Logo" width="52" height="52" style="object-fit:contain;display:block;margin:0;padding:0">
   <div>
-    <p class="eb" style="margin-bottom:4px">Neural_Kit · version 0.2.0</p>
-    <div style="font:700 12px var(--mono);color:var(--lime);letter-spacing:.08em;text-transform:uppercase">Native Ada 2022 Deep Learning</div>
+    <p class="eb" style="margin:0">Neural_Kit · version 0.2.0</p>
+    <div style="font:600 12px var(--mono);color:var(--green-2);letter-spacing:.04em">Native Ada 2022 Deep Learning</div>
   </div>
 </div>
 <h1>Neural networks from first principles.<br><em>Built natively in Ada.</em></h1>
 <p class="lead">An experimental, CPU-based machine learning framework written entirely in Ada 2022. From unconstrained vectors and matrices to trainable neurons and multi-neuron layers with zero garbage-collection overhead.</p>
-<div class="cta"><a class="btn p" href="getting-started.html">Get started</a><a class="btn" href="tutorials/index.html">Browse tutorials</a></div></div>
+<div class="cta"><a class="btn p" href="getting-started.html">Get started</a><a class="btn" href="examples/index.html">See what I built with Neural_Kit →</a><a class="btn" href="tutorials/index.html">Browse tutorials</a></div>
+</div>
 
 <h2 id="first-program">Your first Neural_Kit program</h2>
 <p>Here is a complete, standalone Ada 2022 program that creates a single neuron, feeds a two-dimensional input, activates it with the sigmoid function, and computes binary cross-entropy loss against a target:</p>
@@ -42,6 +43,7 @@ end Main;</code></pre>
 
 <h2 id="learn">Choose your path</h2>
 <div class="grid">
+<a class="card" href="examples/index.html" style="border-color:#8fbaa7;background:#f3f9f4"><small style="color:var(--green)">SHOWCASE</small><b>See what I built with Neural_Kit</b><span>Explore real-time interactive apps: Vision Canvas digit recognition and Botanical Species classification trained natively in Ada.</span></a>
 <a class="card" href="getting-started.html"><small>START</small><b>Getting started</b><span>Install Alire, set up your Ada 2022 compiler, and configure your first project.</span></a>
 <a class="card" href="tutorials/index.html"><small>LEARN</small><b>Beginner tutorials</b><span>Step-by-step interactive course: vectors, linear algebra, activations, losses, and layers.</span></a>
 <a class="card" href="developer-overview.html"><small>UNDERSTAND</small><b>Developer guide</b><span>Explore memory safety, unconstrained array slices, Design by Contract, and numerical stability.</span></a>
@@ -61,6 +63,10 @@ end Main;</code></pre>
 <script>
 const IDX=[
   ["Overview", "index.html", "Home"],
+  ["See what I built with Neural_Kit", "examples/index.html", "Showcase"],
+  ["Examples showcase", "examples/index.html", "Showcase"],
+  ["Vision Canvas: Optical digit recognizer", "examples/mnist.html", "Demo"],
+  ["Neural Flora: Botanical species classifier", "examples/iris.html", "Demo"],
   ["Getting started", "getting-started.html", "Guide"],
   ["Tutorials index", "tutorials/index.html", "Course"],
   ["Beginner tutorial guide", "tutorials/beginner-guide.html", "Tutorial"],

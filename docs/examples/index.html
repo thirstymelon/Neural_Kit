@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>See what I built with Neural_Kit · Examples</title>
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" type="image/png" href="../assets/logo.png">
+<style>
+.w{width:100%!important;max-width:100%!important;padding:0 clamp(20px,3.5vw,56px)}
+.doc{display:block!important;padding-top:40px;padding-bottom:90px;width:100%!important;max-width:100%!important}
+article{width:100%!important;max-width:100%!important}
+.brand img{width:54px!important;height:54px!important;object-fit:contain!important;display:block!important;border-radius:0!important;padding:0!important;margin:0!important}
+.page-head{margin:0 0 36px;padding-bottom:18px;border-bottom:1px solid var(--line);width:100%}
+.page-head .eb{font:700 11px var(--mono);color:var(--coral);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.page-head h1{font:500 clamp(2.2rem,3.8vw,3.2rem)/1.1 var(--serif);color:var(--green);margin:0;letter-spacing:-.03em}
+
+.project-list{display:flex;flex-direction:column;gap:18px;margin:32px 0;width:100%}
+.project-card{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;box-sizing:border-box;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:32px 38px;text-decoration:none;color:var(--ink);transition:all .2s ease;box-shadow:0 4px 16px rgba(23,77,64,.04)}
+.project-card:hover{transform:translateY(-2px);border-color:var(--green);box-shadow:0 10px 28px rgba(23,77,64,.1);color:var(--green)}
+.project-left{display:flex;align-items:center;gap:24px}
+.project-num{font:700 15px var(--mono);color:var(--coral);letter-spacing:.08em}
+.project-name{font:500 clamp(1.4rem,2.2vw,1.9rem) var(--serif);color:var(--green);letter-spacing:-.015em;transition:color .2s ease}
+.project-card:hover .project-name{color:var(--green-2)}
+.project-arrow{font-size:32px;line-height:1;color:var(--green);transition:transform .2s ease,color .2s ease;padding:0;margin:0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.project-card:hover .project-arrow{color:var(--coral);transform:translateX(6px)}
+
+@media(max-width:640px){
+  .brand img{width:42px!important;height:42px!important}
+  .project-card{padding:22px 20px;gap:14px}
+  .project-left{gap:14px}
+  .project-arrow{font-size:24px}
+}
+</style>
+</head>
+<body data-r="../">
+<header>
+  <div class="w">
+    <a class="brand" href="../index.html">
+      <img src="../assets/logo.png" alt="Neural_Kit">
+      <span>Neural_Kit<i>.</i><sup>0.2.0</sup></span>
+    </a>
+    <nav>
+      <a href="../getting-started.html">Start</a>
+      <a href="../tutorials/index.html">Tutorials</a>
+      <a href="index.html" class="on">Examples</a>
+      <a href="../developer-overview.html">Developer</a>
+      <a href="../reference.html">Reference</a>
+    </nav>
+    <button class="sb" id="sk">Search <kbd>Ctrl K</kbd></button>
+    <button class="mb" id="mb" aria-label="Menu">≡</button>
+  </div>
+</header>
+
+<div class="w doc">
+<article>
+  <div class="page-head">
+    <div class="eb">Neural_Kit · Showcase</div>
+    <h1>See what I built with Neural_Kit</h1>
+  </div>
+
+  <div class="project-list">
+    <a class="project-card" href="mnist.html">
+      <div class="project-left">
+        <span class="project-num">01</span>
+        <span class="project-name">Handwritten Digit Recognition / MNIST Digit Classifier</span>
+      </div>
+      <div class="project-arrow" aria-hidden="true">→</div>
+    </a>
+
+    <a class="project-card" href="iris.html">
+      <div class="project-left">
+        <span class="project-num">02</span>
+        <span class="project-name">Iris Flower Classification</span>
+      </div>
+      <div class="project-arrow" aria-hidden="true">→</div>
+    </a>
+  </div>
+</article>
+</div>
+
+<footer>
+  <div class="w">
+    <span>Neural_Kit 0.2.0 · Example Applications</span>
+    <span><a href="../index.html">Documentation Home</a> · <a href="https://github.com/thirstymelon/Neural_Kit">GitHub Repository</a></span>
+  </div>
+</footer>
+</body>
+</html>

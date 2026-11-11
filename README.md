@@ -90,6 +90,9 @@ end Main;
 For in-depth explanations, setup guides, step-by-step interactive lessons, architectural deep dives, and complete API specifications, explore the official documentation website:
 
 - [**Documentation Hub**](https://thirstymelon.github.io/Neural_Kit/): Central gateway, architecture overview, quick start, and Ctrl+K search palette.
+- [**See What I Built with Neural_Kit**](https://thirstymelon.github.io/Neural_Kit/examples/index.html): Interactive application showcase demonstrating real-time client-side neural inference.
+- [**Vision Canvas: Optical Digit Recognizer**](https://thirstymelon.github.io/Neural_Kit/examples/mnist.html): Draw digits on an interactive $420 \times 420$ canvas with 8-way shift-invariant pattern recognition.
+- [**Neural Flora: Botanical Species Classifier**](https://thirstymelon.github.io/Neural_Kit/examples/iris.html): Real-time Fisher's Iris plant classification with dynamic measurement sliders and Softmax probability distributions.
 - [**Getting Started Guide**](https://thirstymelon.github.io/Neural_Kit/getting-started.html): Installation, toolchain setup with Alire, building the static library, and configuring your first project.
 - [**Beginner's Course (7 Lessons)**](https://thirstymelon.github.io/Neural_Kit/tutorials/beginner-guide.html): A complete hands-on course covering scalars, vectors, linear algebra, activations, loss functions, PRNG, single-neuron AND gate training, and dense multi-neuron layers with progress tracking.
 - [**Developer & Architectural Overview**](https://thirstymelon.github.io/Neural_Kit/developer-overview.html): Deep dive into the unconstrained array memory model, Design by Contract semantics, matrix conventions, and numerical stability engineering.
@@ -107,8 +110,12 @@ Neural_Kit is built and managed with **Alire** (the Ada Literate REpository) and
 # Build the core library
 alr build
 
-# Run the included demo application
-cd example
+# Run the Iris flower classification example
+cd examples/iris_classification
+alr run
+
+# Run the MNIST handwritten digit recognition example
+cd examples/mnist_classifier
 alr run
 
 # Run the automated test suite (113 assertions across 8 test suites)

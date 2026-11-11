@@ -1,4 +1,4 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Getting started · Neural_Kit 0.2.0</title><link rel=stylesheet href="styles.css"><link rel="icon" type="image/png" href="assets/logo.png"></head><body data-r=""><header><div class=w><a class=brand href="index.html"><img src="assets/logo.png" alt="Neural_Kit"><span>Neural_Kit<i>.</i><sup>0.2.0</sup></span></a><nav><a href="getting-started.html" class=on>Start</a><a href="tutorials/index.html">Tutorials</a><a href="developer-overview.html">Developer</a><a href="reference.html">Reference</a></nav><button class=sb id=sk>Search <kbd>Ctrl K</kbd></button><button class=mb id=mb aria-label=Menu>≡</button></div></header><div class="w doc"><article>
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Getting started · Neural_Kit 0.2.0</title><link rel=stylesheet href="styles.css"><link rel="icon" type="image/png" href="assets/logo.png"></head><body data-r=""><header><div class=w><a class=brand href="index.html"><img src="assets/logo.png" alt="Neural_Kit"><span>Neural_Kit<i>.</i><sup>0.2.0</sup></span></a><nav><a href="getting-started.html" class=on>Start</a><a href="tutorials/index.html">Tutorials</a><a href="examples/index.html">Examples</a><a href="developer-overview.html">Developer</a><a href="reference.html">Reference</a></nav><button class=sb id=sk>Search <kbd>Ctrl K</kbd></button><button class=mb id=mb aria-label=Menu>≡</button></div></header><div class="w doc"><article>
 <p class=eb>Setup & Installation Guide</p><h1>Getting started with Neural_Kit</h1>
 <p class=lead>Learn how to set up the Ada 2022 toolchain with Alire, build Neural_Kit, run the automated test suite, and wire the library into your own projects.</p>
 
@@ -26,33 +26,18 @@ alr build</code></pre>
 
 <p>Alire will automatically download and configure the GNAT toolchain (if not already present), compile the Ada packages, and generate the static library <code>lib/libNeural_Kit.a</code>.</p>
 
-<h2 id="running-example">Running the included example</h2>
-<p>Neural_Kit includes a demonstration application in <code>example/</code> that trains a single neuron on the logical <b>AND</b> truth table, followed by a forward propagation pass through a multi-neuron layer:</p>
-<pre class=sh><code>cd example
+<h2 id="running-example">Running the included examples</h2>
+<p>Neural_Kit includes two standalone projects in <code>examples/</code> demonstrating real-world classification benchmarks:</p>
+
+<h3>1. Iris Flower Species Classification</h3>
+<p>Trains a multi-neuron network on Fisher's classic Iris plant dataset (4 features, 3 species) using He-initialized ReLU hidden layers and Softmax outputs:</p>
+<pre class=sh><code>cd examples/iris_classification
 alr run</code></pre>
 
-<p>You will see output showing training loss decreasing over 10,000 epochs, followed by correct truth table predictions:</p>
-<pre class=sh><code>Neural_Kit v0.2.0
-Part 1: Single Neuron - AND Gate Training
-
-Epoch:  1000  Loss:  4.26605E-02
-Epoch:  5000  Loss:  8.64357E-03
-Epoch:  10000 Loss:  4.30104E-03
-
-AND results:
-Input: (0.0, 0.0)  Target: 0.0  Prediction: 1.82568E-07  Class: FALSE
-Input: (0.0, 1.0)  Target: 0.0  Prediction: 5.04433E-03  Class: FALSE
-Input: (1.0, 0.0)  Target: 0.0  Prediction: 5.04748E-03  Class: FALSE
-Input: (1.0, 1.0)  Target: 1.0  Prediction: 9.92952E-01  Class: TRUE
-
-----------------------------------------
-Part 2: Multi-Neuron Layer Forward Propagation
-Architecture: Input(2) -> Dense(3, ReLU) -> Dense(2, Softmax)
-
-Sample Input: (1.0, 0.5)
-Hidden Layer Output (ReLU, 3 neurons): (0.0, 1.16223, 0.0)
-Final Layer Output (Softmax probabilities, 2 classes): (0.14246, 0.85754)
-Probability Sum: 1.00000</code></pre>
+<h3>2. Handwritten Digit Recognition (MNIST)</h3>
+<p>Trains an 8x8 bitmap handwritten digit classifier (64 inputs, 10 digit classes 0..9) with visual ASCII art rendering and confidence distribution bar charts:</p>
+<pre class=sh><code>cd examples/mnist_classifier
+alr run</code></pre>
 
 <h2 id="running-tests">Running the automated test suite</h2>
 <p>Neural_Kit includes a comprehensive automated test runner verifying linear algebra, numerical stability, activations, loss calculations, Box-Muller PRNG distributions, and gradient checking:</p>
