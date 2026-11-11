@@ -95,7 +95,7 @@ For in-depth explanations, setup guides, step-by-step interactive lessons, archi
 - [**Developer & Architectural Overview**](https://thirstymelon.github.io/Neural_Kit/developer-overview.html): Deep dive into the unconstrained array memory model, Design by Contract semantics, matrix conventions, and numerical stability engineering.
 - [**Technical API Reference**](https://thirstymelon.github.io/Neural_Kit/reference.html): Authoritative technical specifications for all types, subprograms, contracts, and error conditions across `Types`, `Math`, `Random`, `Neuron`, and `Layer`.
 
-*The entire documentation suite is also available offline inside [`Docs/`](Docs/). Simply open `Docs/index.html` in any web browser.*
+*The entire documentation suite is also available offline inside [`docs/`](docs/). Simply open `docs/index.html` in any web browser.*
 
 ---
 
