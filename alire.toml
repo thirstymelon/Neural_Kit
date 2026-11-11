@@ -1,11 +1,18 @@
 name = "neural_kit"
-description = "A neural network library written entirely in Ada"
-version = "0.1.0-dev"
+version = "0.2.0"
+description = "A neural network and deep learning framework written in Ada 2022"
+licenses = "Apache-2.0"
+website = "https://github.com/thirstymelon/Neural_Kit"
 
-authors = ["Lokesh"]
-maintainers = ["Lokesh <lokesh.panditi.29@gmail.com>"]
+authors = ["Lokesh Panditi <lokesh.panditi.29@gmail.com>"]
+maintainers = ["Lokesh Panditi <lokesh.panditi.29@gmail.com>"]
 maintainers-logins = ["thirstymelon"]
 
-licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
-
-tags = ["neural-network", "ml", "ai", "ada"]
+tags = [
+    "ai",
+    "deep-learning",
+    "ml",
+    "neural-network",
+    "linear-algebra",
+    "ada"
+]

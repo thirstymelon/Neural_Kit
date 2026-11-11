@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="icon/icon.png" alt="Neural_Kit Logo" width="300" height="300" />
+<img src="icon/icon.png" alt="Neural_Kit Logo" width="250" height="250" />
 
 # Neural_Kit
 
